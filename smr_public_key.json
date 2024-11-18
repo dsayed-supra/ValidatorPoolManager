@@ -1,0 +1,11 @@
+{
+  "active": "admin",
+  "list": {
+    "admin": {
+      "ed25519_public_key": "bf2e97ecc246eafa96c3364c623f3dfcea7ab0ee1f7c51644693469b43e2e40d",
+      "account_address": "f4452fac864f2e5986fb22e19bc311274cc8c7f83968fb2eb8b37a933bb02e38",
+      "rpc_url": "http://localhost:27000/",
+      "faucet_url": "http://localhost:27001/"
+    }
+  }
+}

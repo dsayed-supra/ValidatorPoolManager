@@ -1,0 +1,18 @@
+[package]
+name = "validatorListByUserAdd"
+version = "1.0.0"
+upgrade_policy = "compatible"
+authors = []
+
+[addresses]
+ValidatorListByDelegator = "0xf4452fac864f2e5986fb22e19bc311274cc8c7f83968fb2eb8b37a933bb02e38"
+
+
+[dev-addresses]
+
+[dependencies.SupraFramework]
+git = "https://github.com/Entropy-Foundation/aptos-core.git"
+rev = "dev"
+subdir = "aptos-move/framework/supra-framework"
+
+[dev-dependencies]
