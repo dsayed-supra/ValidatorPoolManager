@@ -9,6 +9,9 @@ module ValidatorListByDelegator::ValidatorPoolManager {
         pools: vector<address>,
         max_pools: u64,
     }
+    
+
+    
 
     // Initialize the ValidatorPools resource with an empty list
     public entry fun initialize(owner: &signer,initial_max_pools: u64, new_pools: vector<address>) {
@@ -28,6 +31,43 @@ module ValidatorListByDelegator::ValidatorPoolManager {
 
         assert!(vector::length(&new_pools) <= validator_pools.max_pools, 401); // Exceeds max allowed
         validator_pools.pools = new_pools;
+    }
+
+
+
+    #[view]
+    public fun get_validators_staked_data(admin: address): (vector<address>, vector<vector<u64>>,vector<u64>) acquires ValidatorPools {
+        let validator_pools = borrow_global<ValidatorPools>(admin);
+        let pools_with_stake = vector::empty<address>();
+        //let staked_amount = vector::empty<u64>();
+        let staked_details = vector::empty<vector<u64>>(); 
+        let pool_commisions = vector::empty<u64>();
+        
+        // Loop over each validator pool and check if delegator has active stake
+        let  i = 0;
+        while (i < vector::length(&validator_pools.pools)) {
+            let pool_address = *vector::borrow(&validator_pools.pools, i);
+
+            let (active, inactive,pending_active, pending_inactive) = pbo_delegation_pool::get_delegation_pool_stake(pool_address);
+            let pool_commision = pbo_delegation_pool::operator_commission_percentage(pool_address);
+            // If active stake is greater than 0, add to result vector
+            if (active > 0 || inactive > 0 || pending_inactive > 0 || pending_active> 0 ) {
+                vector::push_back(&mut pools_with_stake, pool_address);
+
+                let stake_info = vector::empty<u64>();
+                vector::push_back(&mut stake_info, active);
+                vector::push_back(&mut stake_info, inactive);
+                vector::push_back(&mut stake_info, pending_active);
+                vector::push_back(&mut stake_info, pending_inactive);
+
+                vector::push_back(&mut staked_details, stake_info);
+                vector::push_back(&mut pool_commisions, pool_commision);                
+
+            };
+            i = i + 1;
+        };
+        
+        (pools_with_stake,staked_details, pool_commisions)
     }
 
     // Function to retrieve all validator pools where the delegator has staked
