@@ -1,21 +1,23 @@
 module ValidatorListByDelegator::ValidatorPoolManager {
 
     use std::signer;
+    use std::error;
     use std::vector;
     use 0x1::pbo_delegation_pool;    
+
+    const ERROR_UNAUTHORIZED_ACCESS: u64 = 1;
+    const ERROR_VALIDATOR_POOL_NOT_EXIST: u64 = 2;
 
     struct ValidatorPools has key {
         owner: address,
         pools: vector<address>,
         max_pools: u64,
     }
-    
-
-    
 
     // Initialize the ValidatorPools resource with an empty list
-    public entry fun initialize(owner: &signer,initial_max_pools: u64, new_pools: vector<address>) {
+    public entry fun initialize(owner: &signer, new_pools: vector<address>) {
         let owner_addr = signer::address_of(owner);
+        let initial_max_pools = vector::length(&new_pools);
         move_to(owner, ValidatorPools {
             owner: owner_addr,
             pools: new_pools,
@@ -26,18 +28,21 @@ module ValidatorListByDelegator::ValidatorPoolManager {
 
     // Add or update the validator pool addresses, only callable by the owner
     public entry fun update_pools(owner: &signer, new_pools: vector<address>) acquires ValidatorPools{
+        assert!(exists<ValidatorPools>(signer::address_of(owner)), error::unavailable(ERROR_VALIDATOR_POOL_NOT_EXIST));
         let validator_pools = borrow_global_mut<ValidatorPools>(signer::address_of(owner));
-        assert!(signer::address_of(owner) == validator_pools.owner, 403); // Unauthorized
+        
+        assert!(signer::address_of(owner) == validator_pools.owner, error::permission_denied(ERROR_UNAUTHORIZED_ACCESS)); 
 
-        assert!(vector::length(&new_pools) <= validator_pools.max_pools, 401); // Exceeds max allowed
+        //assert!(vector::length(&new_pools) <= validator_pools.max_pools, 401); // Exceeds max allowed
         validator_pools.pools = new_pools;
+        validator_pools.max_pools = vector::length(&new_pools);
     }
 
 
-
+    //A method to get the total staked amount and the associated commission for all validator pools.
     #[view]
-    public fun get_validators_staked_data(admin: address): (vector<address>, vector<vector<u64>>,vector<u64>) acquires ValidatorPools {
-        let validator_pools = borrow_global<ValidatorPools>(admin);
+    public fun get_validators_staked_data(owner: address): (vector<address>, vector<vector<u64>>,vector<u64>) acquires ValidatorPools {
+        let validator_pools = borrow_global<ValidatorPools>(owner);
         let pools_with_stake = vector::empty<address>();
         //let staked_amount = vector::empty<u64>();
         let staked_details = vector::empty<vector<u64>>(); 
@@ -72,8 +77,8 @@ module ValidatorListByDelegator::ValidatorPoolManager {
 
     // Function to retrieve all validator pools where the delegator has staked
     #[view]
-    public fun get_delegator_staked_pools(delegator: address, admin: address): (vector<address>, vector<vector<u64>>) acquires ValidatorPools {
-        let validator_pools = borrow_global<ValidatorPools>(admin);
+    public fun get_delegator_staked_pools(delegator: address, owner: address): (vector<address>, vector<vector<u64>>) acquires ValidatorPools {
+        let validator_pools = borrow_global<ValidatorPools>(owner);
         let pools_with_stake = vector::empty<address>();
         //let staked_amount = vector::empty<u64>();
         let staked_details = vector::empty<vector<u64>>(); 
@@ -104,22 +109,15 @@ module ValidatorListByDelegator::ValidatorPoolManager {
     }
 
     // Function to get the current list of validator pools
-    public fun get_validator_pools(admin: address): vector<address> acquires ValidatorPools {
-        let validator_pools = borrow_global<ValidatorPools>(admin);
+    #[view]
+    public fun get_validator_pools(owner: address): vector<address> acquires ValidatorPools {
+        let validator_pools = borrow_global<ValidatorPools>(owner);
         validator_pools.pools
     }
 
     #[view]
-    public fun get_max_pools(admin:address): u64 acquires ValidatorPools {
-        let validator_pools = borrow_global<ValidatorPools>(admin);
+    public fun get_max_pools(owner :address): u64 acquires ValidatorPools {
+        let validator_pools = borrow_global<ValidatorPools>(owner);
         validator_pools.max_pools
-    }
-
-    // Function to update max_pools, only callable by the owner
-    public entry fun set_max_pools(owner: &signer, new_max_pools: u64) acquires ValidatorPools {
-        let validator_pools = borrow_global_mut<ValidatorPools>(signer::address_of(owner));
-        assert!(signer::address_of(owner) == validator_pools.owner, 403); // Unauthorized
-
-        validator_pools.max_pools = new_max_pools;
     }
 }

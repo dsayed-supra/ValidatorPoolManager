@@ -2792,3 +2792,79 @@ Output:
 }
 
 
+Local: (2024-11-26 12:00:35.440167747 +05:30)	 Utc: (2024-11-26 06:30:35.440247064 UTC)
+
+CMD:
+Compile
+Output:
+{
+  "Result": [
+    "f4452fac864f2e5986fb22e19bc311274cc8c7f83968fb2eb8b37a933bb02e38::ValidatorPoolManager"
+  ]
+}
+
+
+Local: (2024-11-26 12:18:34.153888468 +05:30)	 Utc: (2024-11-26 06:48:34.153999963 UTC)
+
+CMD:
+Compile
+Output:
+{
+  "Result": [
+    "f4452fac864f2e5986fb22e19bc311274cc8c7f83968fb2eb8b37a933bb02e38::ValidatorPoolManager"
+  ]
+}
+
+
+Local: (2024-11-26 12:19:36.605300778 +05:30)	 Utc: (2024-11-26 06:49:36.605421046 UTC)
+
+CMD:
+Compile
+Output:
+General: {
+  "Error": "Move compilation failed: extended checks failed"
+}
+Local: (2024-11-26 12:23:12.598019347 +05:30)	 Utc: (2024-11-26 06:53:12.598104707 UTC)
+
+CMD:
+Compile
+Output:
+General: {
+  "Error": "Move compilation failed: extended checks failed"
+}
+Local: (2024-11-26 12:31:09.040393179 +05:30)	 Utc: (2024-11-26 07:01:09.040432780 UTC)
+
+CMD:
+Compile
+Output:
+{
+  "Result": [
+    "f4452fac864f2e5986fb22e19bc311274cc8c7f83968fb2eb8b37a933bb02e38::ValidatorPoolManager"
+  ]
+}
+
+
+Local: (2024-11-26 13:03:16.202478556 +05:30)	 Utc: (2024-11-26 07:33:16.202584564 UTC)
+
+CMD:
+Compile
+Output:
+{
+  "Result": [
+    "f4452fac864f2e5986fb22e19bc311274cc8c7f83968fb2eb8b37a933bb02e38::ValidatorPoolManager"
+  ]
+}
+
+
+Local: (2024-11-26 13:06:27.075242730 +05:30)	 Utc: (2024-11-26 07:36:27.075318145 UTC)
+
+CMD:
+Compile
+Output:
+{
+  "Result": [
+    "f4452fac864f2e5986fb22e19bc311274cc8c7f83968fb2eb8b37a933bb02e38::ValidatorPoolManager"
+  ]
+}
+
+
